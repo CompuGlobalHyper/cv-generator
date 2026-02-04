@@ -1,34 +1,83 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { Resume } from './resume.jsx'
+import { Form } from './form.jsx'
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+
+  let status = 'incomplete'
+  
+  const [form, setForm] = useState({ 
+    name: '',
+    email: '',
+    phone: '',
+    school: '',
+    degree: '',
+    gradDate: '',
+    company: '',
+    position: '',
+    duties: '',
+    startDate: '',
+    endDate: ''
+  })
+
+  const [resume, setResume] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    school: '',
+    degree: '',
+    gradDate: '',
+    company: '',
+    position: '',
+    duties: '',
+    startDate: '',
+    endDate: ''
+  })
+
+  const [isSubmitted, setIsSubmitted] = useState(false)
+
+  function handleChange(e) {
+    const { name, value } = e.target
+
+    setForm((prev) => ({
+      ...prev,
+      [name]: value
+    }))
+  }
+  function handleSubmit() {
+    let status = 'incomplete'
+    let formComplete = Object.keys(form).every(key => {
+      return !!form[key]
+    })
+    if (formComplete) status = 'complete'
+    if (status === 'incomplete') {
+      console.log("Incomplete form")
+      return false
+    } else {
+      setResume(form)
+      setIsSubmitted(true)
+    }
+  }
+
+  function handleEdit() {
+    setIsSubmitted(false)
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className='main-container'>
+      <div className='form-container'>
+        <div className='large bold text title'>Resume Generator</div>
+        <Form form={form} onChange={handleChange} onSubmit={handleSubmit} disabled={isSubmitted} onEdit={handleEdit}
+        >
+        </Form>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
+      <div className="resume-container">
+        <Resume form={resume} isSubmitted={isSubmitted}
+        >
+        </Resume>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    </div>
   )
 }
 
